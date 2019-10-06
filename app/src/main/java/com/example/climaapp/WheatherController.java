@@ -38,7 +38,7 @@ public class WheatherController extends AppCompatActivity {
     String LOCATION_PROVIDER = LocationManager.NETWORK_PROVIDER;
 
     TextView mCityLabel, mTemperatureLabel;
-    ImageView mCityImage;
+    ImageView mCityImage, weatherSymbol;
 
     LocationManager locationManager;
     LocationListener locationListener;
@@ -48,6 +48,10 @@ public class WheatherController extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wheather_controller);
+
+        mCityLabel = findViewById(R.id.locationTV);
+        mTemperatureLabel = findViewById(R.id.tempTV);
+        weatherSymbol = findViewById(R.id.weatherSymbol);
     }
 
     @Override
@@ -139,6 +143,11 @@ public class WheatherController extends AppCompatActivity {
                 super.onSuccess(statusCode, headers, response);
                 Log.d("ClimaApp", "Success JSON ! " + response.toString());
 
+                //Creating a weather data model object fromJason:
+                //In response variable are JSON object with data
+                WheatherDataModel wheatherDataModel = WheatherDataModel.fromJSON(response);
+                updateUI(wheatherDataModel);
+
             }
 
             @Override
@@ -152,7 +161,12 @@ public class WheatherController extends AppCompatActivity {
 
             }
         });
-
-
+    }
+    private void updateUI (WheatherDataModel wheatherDataModel) {
+        mTemperatureLabel.setText(wheatherDataModel.getmTemperature());
+        mCityLabel.setText(wheatherDataModel.getmCity());
+        int resourceID = getResources().getIdentifier(wheatherDataModel.getmIconName(),
+                "drawable", getPackageName());
+        weatherSymbol.setImageResource(resourceID);
     }
 }
