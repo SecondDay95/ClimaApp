@@ -5,13 +5,22 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONObject;
+
+import cz.msebera.android.httpclient.Header;
 
 public class WheatherController extends AppCompatActivity {
 
@@ -19,7 +28,7 @@ public class WheatherController extends AppCompatActivity {
     final int REQUEST_CODE = 123;
     final String WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather";
     // App ID to use OpenWeather data
-    final String APP_ID = "e72____PLEASE_REPLACE_ME_____13";
+    final String APP_ID = "d624cde8770b88ea86b6a9c846412f68";
     // Time between location updates (5000 milliseconds or 5 seconds)
     final long MIN_TIME = 5000;
     // Distance between location updates (1000m or 1km)
@@ -60,6 +69,12 @@ public class WheatherController extends AppCompatActivity {
                 String latitude = String.valueOf(location.getLatitude());
                 Log.d("ClimaApp", "longitude is " + longitude);
                 Log.d("ClimaApp", "latitude is " + latitude);
+                //Preparing a request to get lat and long of the server:
+                RequestParams requestParams = new RequestParams();
+                requestParams.put("lat", latitude);
+                requestParams.put("lon", longitude);
+                requestParams.put("appid", APP_ID);
+                doNetworking(requestParams);
             }
 
             @Override
@@ -100,12 +115,44 @@ public class WheatherController extends AppCompatActivity {
         if (requestCode == REQUEST_CODE) {
             //if allow
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("climaApp", "Permisiion granted");
                 getWeatherForCurrentLocation();
             }
             //if deny
             else {
-
+                Log.d("climaApp", "Permission Denied");
             }
         }
+    }
+    private void doNetworking (RequestParams params) {
+        //Create Async Http client:
+        //Client can do get/post/delete etc.
+        AsyncHttpClient client = new AsyncHttpClient();
+        //get request:
+        //params do a networking methods. params is used to make an api call
+        //new Json... object is used to notify of response of the get request
+        client.get(WEATHER_URL, params, new JsonHttpResponseHandler() {
+            //Json object will receive one of two messages onSuccess or onFailure depending if the get request was succesful or not
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.d("ClimaApp", "Success JSON ! " + response.toString());
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                //if get request was failure:
+                Log.e("ClimaApp", "Fail " + throwable.toString());
+                Log.d("ClimaApp","Status Code = " + statusCode);
+                Toast toast = Toast.makeText(WheatherController.this, "Request Failed", Toast.LENGTH_SHORT);
+                toast.show();
+
+            }
+        });
+
+
     }
 }

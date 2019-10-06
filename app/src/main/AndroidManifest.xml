@@ -13,8 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".WheatherDataModel"></activity>
-        <activity android:name=".WheatherController" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"/>
+        <activity android:name=".WheatherController" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
