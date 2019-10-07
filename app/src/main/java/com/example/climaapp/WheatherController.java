@@ -1,6 +1,7 @@
 package com.example.climaapp;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -10,6 +11,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +42,7 @@ public class WheatherController extends AppCompatActivity {
 
     TextView mCityLabel, mTemperatureLabel;
     ImageView mCityImage, weatherSymbol;
+    ImageButton changeCityButton;
 
     LocationManager locationManager;
     LocationListener locationListener;
@@ -49,16 +53,40 @@ public class WheatherController extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wheather_controller);
 
-        mCityLabel = findViewById(R.id.locationTV);
-        mTemperatureLabel = findViewById(R.id.tempTV);
-        weatherSymbol = findViewById(R.id.weatherSymbol);
+        mCityLabel = (TextView) findViewById(R.id.locationTV);
+        mTemperatureLabel = (TextView) findViewById(R.id.tempTV);
+        weatherSymbol = (ImageView) findViewById(R.id.weatherSymbol);
+        changeCityButton = (ImageButton) findViewById(R.id.changeCityButton);
+
+        changeCityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(WheatherController.this, ChangeCityController.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
 
-        getWeatherForCurrentLocation();
+        Intent intent = getIntent();
+        String cityName = intent.getStringExtra("City");
+
+        if (cityName != null) {
+            getWeatherForTheCityName(cityName);
+        }
+        else {
+            getWeatherForCurrentLocation();
+        }
+    }
+
+    private void getWeatherForTheCityName(String city) {
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("q", city);
+        requestParams.put("appid", APP_ID);
+        doNetworking(requestParams);
     }
 
     private void getWeatherForCurrentLocation() {
@@ -168,5 +196,15 @@ public class WheatherController extends AppCompatActivity {
         int resourceID = getResources().getIdentifier(wheatherDataModel.getmIconName(),
                 "drawable", getPackageName());
         weatherSymbol.setImageResource(resourceID);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        //When the app was exited, quit of the locationListener
+        if (locationManager != null) {
+            locationManager.removeUpdates(locationListener);
+        }
     }
 }

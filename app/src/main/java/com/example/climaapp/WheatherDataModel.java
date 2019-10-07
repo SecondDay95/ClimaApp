@@ -81,7 +81,7 @@ public class WheatherDataModel extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wheather_data_model);
+        //setContentView(R.layout.change_city);
     }
 
     public String getmTemperature() {
