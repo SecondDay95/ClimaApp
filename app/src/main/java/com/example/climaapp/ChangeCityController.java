@@ -35,6 +35,8 @@ public class ChangeCityController extends AppCompatActivity {
                 String newCity = editText.getText().toString();
                 Intent intent = new Intent(ChangeCityController.this, WheatherController.class);
                 intent.putExtra("City", newCity);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 return false;
             }

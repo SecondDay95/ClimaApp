@@ -48,7 +48,7 @@ public class WheatherDataModel extends AppCompatActivity {
         else if (condition >= 500 && condition < 600) {
             return "shower3";
         }
-        else if (condition >= 600 && condition < 700) {
+        else if (condition >= 600 && condition <= 700) {
             return "snow4";
         }
         else if (condition >= 701 && condition < 771) {
@@ -60,7 +60,7 @@ public class WheatherDataModel extends AppCompatActivity {
         else if (condition == 800) {
             return "sunny";
         }
-        else if (condition >= 801 && condition < 804) {
+        else if (condition >= 801 && condition < 900) {
             return "cloudy2";
         }
         else if (condition >= 900 && condition < 902) {
