@@ -21,6 +21,8 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
@@ -67,6 +69,8 @@ public class WheatherController extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        createJSON();
     }
 
     @Override
@@ -198,6 +202,29 @@ public class WheatherController extends AppCompatActivity {
         int resourceID = getResources().getIdentifier(wheatherDataModel.getmIconName(),
                 "drawable", getPackageName());
         weatherSymbol.setImageResource(resourceID);
+    }
+
+    public JSONObject createJSON() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("name", "London");
+            JSONArray jsonArray = new JSONArray();
+            JSONObject item = new JSONObject();
+            item.put("id", 800);
+            jsonArray.put(0, item);
+            jsonObject.put("weather", jsonArray);
+            JSONObject jsonObject2 = new JSONObject();
+            jsonObject2.put("temp", 289.92);
+            //jsonObject1.put("main", jsonObject2);
+            jsonObject.put("main", jsonObject2);
+            System.out.println("JSON created" + jsonObject.toString());
+
+            return jsonObject;
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

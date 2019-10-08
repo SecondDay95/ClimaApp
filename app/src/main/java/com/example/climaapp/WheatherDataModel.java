@@ -24,6 +24,7 @@ public class WheatherDataModel extends AppCompatActivity {
             WheatherDataModel wheatherDataModel = new WheatherDataModel();
 
             wheatherDataModel.mCity = jsonObject.getString("name");
+            System.out.println(wheatherDataModel.mCity);
             wheatherDataModel.mCondition = jsonObject.getJSONArray("weather").getJSONObject(0).getInt("id");
             wheatherDataModel.mIconName = updateWheatherIcon(wheatherDataModel.mCondition);
 
